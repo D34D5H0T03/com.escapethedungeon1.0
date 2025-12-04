@@ -14,7 +14,7 @@ public abstract class Item implements Serializable {
         this.description = description;
     }
 
-    public abstract void use(Player player, Combatant target);
+    public abstract void use(Combatant user, Combatant target);
     public abstract boolean isConsumable();
 
     public String getName() {

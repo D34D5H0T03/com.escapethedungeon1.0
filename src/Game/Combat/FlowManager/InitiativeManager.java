@@ -1,4 +1,4 @@
-package Game.Combat;
+package Game.Combat.FlowManager;
 
 import Util.Dice;
 import Model.Entities.Combatant;

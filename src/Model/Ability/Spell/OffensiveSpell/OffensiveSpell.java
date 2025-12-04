@@ -2,7 +2,6 @@ package Model.Ability.Spell.OffensiveSpell;
 
 import Model.Ability.Spell.Spell;
 import Model.Entities.Combatant;
-import Model.Entities.Player.Player;
 
 public class OffensiveSpell extends Spell {
 
@@ -14,16 +13,24 @@ public class OffensiveSpell extends Spell {
     }
 
     @Override
-    public void cast(Combatant caster, Combatant target) {
+    public void cast(Combatant caster, Combatant target, boolean isCritical) { //for out of combat casting
         if (caster.getMp() < mpCost) {
             System.out.println("NOT ENOUGH MP");
             return;
         }
         caster.setMp(caster.getMp() - mpCost);
 
+        if(isCritical){
+            damage *= 2;
+        }
+
         if(target != null){
             target.setHp(Math.max(0, target.getHp() - damage));
         }
+    }
+
+    public boolean isRequiresAttackRoll(){
+        return true;
     }
 
     public int getDamage() {

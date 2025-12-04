@@ -9,18 +9,20 @@ public abstract class Boss implements Combatant {
     protected int mp;
     protected int maxMP;
     protected int armourClass;
+    protected int spellSave;
     protected int initiativeBonus;
     protected int accuracy;
     protected int level;
     protected int souls;
 
-    public Boss(String name, int maxHP, int maxMP, int armourClass, int initiativeBonus, int accuracy, int level, int souls) {
+    public Boss(String name, int maxHP, int maxMP, int armourClass,int spellSave, int initiativeBonus, int accuracy, int level, int souls) {
         this.name = name;
         this.maxHP = maxHP;
         this.hp = maxHP;
         this.maxMP = maxMP;
         this.mp = maxMP;
         this.armourClass = armourClass;
+        this.spellSave = spellSave;
         this.initiativeBonus = initiativeBonus;
         this.accuracy = accuracy;
         this.level = level;
@@ -90,11 +92,23 @@ public abstract class Boss implements Combatant {
         return initiativeBonus;
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
+
+    @Override
     public int getSouls() {
         return souls;
+    }
+
+    public int getSpellSave() {
+        return spellSave;
+    }
+
+    @Override
+    public void addSouls(int amount) {
+        this.souls += amount;
     }
 
     public abstract String getDescription();

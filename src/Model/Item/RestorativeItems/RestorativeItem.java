@@ -16,7 +16,7 @@ public class RestorativeItem extends Item {
     }
 
     @Override
-    public void use(Player player, Combatant target) {
+    public void use(Combatant user, Combatant target) {
         if (hpRestore > 0) {
             int newHp = target.getHp() + hpRestore;
             target.setHp(Math.min(newHp, target.getMaxHP()));

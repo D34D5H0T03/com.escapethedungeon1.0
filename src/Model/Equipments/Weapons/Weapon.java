@@ -1,19 +1,20 @@
 package Model.Equipments.Weapons;
 
 import Model.Entities.Stats;
+import Util.Dice;
 
 public class Weapon {
     private final WeaponType type;
     private final String name;
-    private final int primaryDamage;
-    private final int secondaryDamage;
+    private final Dice.DiceType primaryDice;
+    private final Dice.DiceType secondaryDice;
     private final Stats scalingStat;
 
     public Weapon(WeaponType type){
         this.type = type;
         this.name = type.getName();
-        this.primaryDamage = type.getPrimaryDamage();
-        this.secondaryDamage = type.getSecondaryDamage();
+        this.primaryDice = type.getPrimaryDice();
+        this.secondaryDice = type.getSecondaryDice();
         this.scalingStat = type.getScalingStat();
 
     }
@@ -26,26 +27,23 @@ public class Weapon {
         return name;
     }
 
-    public int getPrimaryDamage() {
-        return primaryDamage;
+    public Dice.DiceType getPrimaryDice() {
+        return primaryDice;
     }
 
-    public int getSecondaryDamage() {
-        return secondaryDamage;
+    public Dice.DiceType getSecondaryDice() {
+        return secondaryDice;
     }
 
     public Stats getScalingStat() {
         return scalingStat;
     }
 
-    @Override
-    public String toString() {
-        return "Weapon{" +
-                "type=" + type +
-                ", name='" + name + '\'' +
-                ", primaryDamage=" + primaryDamage +
-                ", secondaryDamage=" + secondaryDamage +
-                ", scalingStat=" + scalingStat +
-                '}';
+    public int calculateBaseDamage() {
+        return Dice.rollDice(primaryDice) + Dice.rollDice(secondaryDice);
+    }
+
+    public String getDamageDescription() {
+        return primaryDice + " + " + secondaryDice;
     }
 }

@@ -1,18 +1,24 @@
 package Model.Entities.Enemy;
 
+import Util.Dice;
+
 public enum EnemyType {
     UNDEAD_GUARD("Undead Guard", 65, 65,
             10, 10, 15,
-            15, 8, 4,
-            10, 12, 5,
+            15, 12,8,
+            Dice.DiceType.D4, Dice.DiceType.D4, 2,
+            Dice.DiceType.D6, Dice.DiceType.D4, 2,
+            5,  // Upgrade level
             60, 20),
 
     SKELETON_SOLDIER(
             "Skeleton Soldier",
-            40, 40, 5,5,
-            10, 13, 10,
-            6, 8, 10,
-            5, 50, 15
+            40, 40, 5, 5,
+            10, 13, 15, 10,
+            Dice.DiceType.D4, Dice.DiceType.D4, 0,
+            Dice.DiceType.D6, Dice.DiceType.D4, 0,
+            5,  // Upgrade level
+            50, 15
     );
 
     private final String name;
@@ -22,17 +28,24 @@ public enum EnemyType {
     private final int mp;
     private final int hpPerLevel;
     private final int armourClass;
+    private final int spellSave;
     private final int accuracy;
-    private final int damageMin;
-    private final int baseDamageMax;
-    private final int upgradedDamageMax;
+    private final Dice.DiceType basePrimaryDice;
+    private final Dice.DiceType baseSecondaryDice;
+    private final int baseDamageBonus;
+    private final Dice.DiceType upgradedPrimaryDice; //the level 5 upgrade for fodder enemies
+    private final Dice.DiceType upgradedSecondaryDice;
+    private final int upgradedDamageBonus;
+
     private final int upgradeLevel;
     private final int baseSouls;
     private final int soulsPerLevel;
 
-    EnemyType(String name, int maxHP, int hp, int maxMP, int mp, int hpPerLevel, int armourClass, int accuracy,
-              int damageMin, int baseDamageMax, int upgradedDamageMax, int upgradeLevel,
-              int baseSouls, int soulsPerLevel) {
+    EnemyType(String name, int maxHP, int hp, int maxMP, int mp, int hpPerLevel,
+              int armourClass, int spellSave, int accuracy,
+              Dice.DiceType basePrimaryDice, Dice.DiceType baseSecondaryDice, int baseDamageBonus,
+              Dice.DiceType upgradedPrimaryDice, Dice.DiceType upgradedSecondaryDice, int upgradedDamageBonus,
+              int upgradeLevel, int baseSouls, int soulsPerLevel) {
         this.name = name;
         this.maxHP = maxHP;
         this.hp = hp;
@@ -40,10 +53,14 @@ public enum EnemyType {
         this.mp = mp;
         this.hpPerLevel = hpPerLevel;
         this.armourClass = armourClass;
+        this.spellSave = spellSave;
         this.accuracy = accuracy;
-        this.damageMin = damageMin;
-        this.baseDamageMax = baseDamageMax;
-        this.upgradedDamageMax = upgradedDamageMax;
+        this.basePrimaryDice = basePrimaryDice;
+        this.baseSecondaryDice = baseSecondaryDice;
+        this.baseDamageBonus = baseDamageBonus;
+        this.upgradedPrimaryDice = upgradedPrimaryDice;
+        this.upgradedSecondaryDice = upgradedSecondaryDice;
+        this.upgradedDamageBonus = upgradedDamageBonus;
         this.upgradeLevel = upgradeLevel;
         this.baseSouls = baseSouls;
         this.soulsPerLevel = soulsPerLevel;
@@ -69,16 +86,28 @@ public enum EnemyType {
         return accuracy;
     }
 
-    public int getBaseDamageMax() {
-        return baseDamageMax;
+    public Dice.DiceType getBasePrimaryDice() {
+        return basePrimaryDice;
     }
 
-    public int getDamageMin() {
-        return damageMin;
+    public Dice.DiceType getBaseSecondaryDice() {
+        return baseSecondaryDice;
     }
 
-    public int getUpgradedDamageMax() {
-        return upgradedDamageMax;
+    public int getBaseDamageBonus() {
+        return baseDamageBonus;
+    }
+
+    public Dice.DiceType getUpgradedPrimaryDice() {
+        return upgradedPrimaryDice;
+    }
+
+    public Dice.DiceType getUpgradedSecondaryDice() {
+        return upgradedSecondaryDice;
+    }
+
+    public int getUpgradedDamageBonus() {
+        return upgradedDamageBonus;
     }
 
     public int getUpgradeLevel() {
@@ -103,5 +132,9 @@ public enum EnemyType {
 
     public int getMp() {
         return mp;
+    }
+
+    public int getSpellSave() {
+        return spellSave;
     }
 }

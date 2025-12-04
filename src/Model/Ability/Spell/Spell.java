@@ -11,7 +11,8 @@ public abstract class Spell implements Serializable, Castable {
     protected int mpCost;
     protected String description;
 
-    public abstract void cast(Combatant caster, Combatant target);
+    public abstract void cast(Combatant caster, Combatant target, boolean isCritical);
+    public abstract boolean isRequiresAttackRoll();
 
     public Spell(String name, String description, int mpCost) {
         this.name = name;
@@ -33,4 +34,5 @@ public abstract class Spell implements Serializable, Castable {
     public String getDescription() {
         return description;
     }
+
 }

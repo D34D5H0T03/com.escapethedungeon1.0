@@ -15,6 +15,7 @@ public enum PlayerType {
             100,
             50,
             6,
+            13,
             1,
             new int[]{1, 0, 1, 0, 0, 0},
             5,
@@ -28,6 +29,7 @@ public enum PlayerType {
             90,
             60,
             8,
+            16,
             2,
             new int[]{0, 1, 1, 0, 0, 0},
             7,
@@ -41,6 +43,7 @@ public enum PlayerType {
             80,
             70,
             5,
+            14,
             4,
             new int[]{0, 0, 1, 0, 1, 0},
             2,
@@ -57,6 +60,7 @@ public enum PlayerType {
             80,
             70,
             7,
+            15,
             5,
             new int[]{0, 0, 1, 1, 0, 0},
             3,
@@ -76,6 +80,7 @@ public enum PlayerType {
     private final int baseMaxHp;
     private final int baseMaxMp;
     private final int baseAccuracy;
+    private final int baseSpellSave;
     private final int spellSlots;
     private final int[] levelUpBonuses;
     private final int initiativeBonus;
@@ -88,6 +93,7 @@ public enum PlayerType {
                int baseMaxHp,
                int baseMaxMp,
                int baseAccuracy,
+               int baseSpellSave,
                int spellSlots,
                int[] levelUpBonuses,
                int initiativeBonus,
@@ -101,6 +107,7 @@ public enum PlayerType {
         this.baseMaxHp = baseMaxHp;
         this.baseMaxMp = baseMaxMp;
         this.baseAccuracy = baseAccuracy;
+        this.baseSpellSave = baseSpellSave;
         this.spellSlots = spellSlots;
         this.levelUpBonuses = levelUpBonuses;
         this.initiativeBonus = initiativeBonus;
@@ -160,5 +167,9 @@ public enum PlayerType {
 
     public List<Castable> getStartingAbilities() {
         return startingAbilities;
+    }
+
+    public int getBaseSpellSave() {
+        return baseSpellSave;
     }
 }

@@ -3,6 +3,7 @@ package Model.Entities.Boss.HumanoidBoss;
 import Model.Ability.Castable;
 import Model.Ability.Spell.Spell;
 import Model.Entities.Boss.Boss;
+import Model.Entities.Combatant;
 import Model.Entities.Stats;
 import Model.Equipments.Armours.Armour;
 import Model.Equipments.Weapons.Weapon;
@@ -11,7 +12,6 @@ import Model.Item.RestorativeItems.RestorativeItemType;
 import Util.Factory;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class HumanoidBoss extends Boss {
     private HumanoidBossType type;
@@ -20,16 +20,16 @@ public class HumanoidBoss extends Boss {
     private Weapon mainHand;
     private Armour bodyArmour;
 
-    private final int[] stats = new int[6];
+    private final int[] STATS = new int[6];
 
     public HumanoidBoss(HumanoidBossType type) {
-        super(type.getName(), type.getMaxHP(), type.getMaxMP(), type.getArmourClass(),type.getInitiativeBonus(),
+        super(type.getName(), type.getMaxHP(), type.getMaxMP(), type.getArmourClass(), type.getSpellSave(), type.getInitiativeBonus(),
                 type.getAccuracy(), type.getLevel(), type.getSouls());
         this.type = type;
 
         int[] base = type.getStats();
         for (Stats stat : Stats.values()) {
-            stats[stat.getIndex()] = base[stat.getIndex()];
+            STATS[stat.getIndex()] = base[stat.getIndex()];
         }
 
         this.availableSpells = new ArrayList<>();
@@ -55,9 +55,10 @@ public class HumanoidBoss extends Boss {
     }
 
     public int getStat(Stats stat) {
-        return stats[stat.getIndex()];
+        return STATS[stat.getIndex()];
     }
 
+    @Override
     public int getStatModifier(Stats stat) {
         return (getStat(stat) - 10) / 2;
     }
@@ -74,29 +75,42 @@ public class HumanoidBoss extends Boss {
         return accuracy + getStatModifier(Stats.DEXTERITY);
     }
 
-    public int calculateWeaponDamage(Random rand) {
-        int primaryDamage = rand.nextInt(mainHand.getPrimaryDamage()) + 1;
-        int secondaryDamage = rand.nextInt(mainHand.getSecondaryDamage()) + 1;
-        Stats scalingStat = mainHand.getScalingStat();
-        int statMod = getStatModifier(scalingStat);
+    @Override
+    public int calculateBaseDamage(){
+        return mainHand.calculateBaseDamage();
+    }
 
-        return primaryDamage + secondaryDamage + statMod;
+    @Override
+    public int calculateTotalDamage(){
+        return mainHand.calculateBaseDamage() + getStatModifier(mainHand.getScalingStat());
+    }
+
+    @Override
+    public boolean canRegenerate(){
+        return false;
+    }
+
+    @Override
+    public int regenerationRate(){
+        return 0;
     }
 
     public HumanoidBossType getType() {
         return type;
     }
 
-    public int[] getStats() {
-        return stats;
+    public int[] getSTATS() {
+        return STATS;
     }
 
-    public ArrayList<Item> getInventory() {
-        return inventory;
-    }
 
     public ArrayList<Spell> getAvailableSpells() {
         return availableSpells;
+    }
+
+    @Override
+    public int getSpellSave(){
+        return getSpellSave() + getStatModifier(Stats.INTELLIGENCE);
     }
 
     public Weapon getMainHand() {
@@ -105,5 +119,28 @@ public class HumanoidBoss extends Boss {
 
     public Armour getBodyArmour() {
         return bodyArmour;
+    }
+
+    //boss inventory
+    @Override
+    public ArrayList<Item> getInventory() {
+        return inventory;
+    }
+
+    public boolean removeItem(Item item) {
+        return inventory.remove(item);
+    }
+
+    @Override
+    public boolean hasItem(Item item) {
+        return inventory.contains(item);
+    }
+
+    @Override
+    public void useItem(Item item, Combatant target) {
+        item.use(this, target);
+        if (item.isConsumable()) {
+            System.out.println(removeItem(item) ? "Item Consumed" : "Not consumed");
+        }
     }
 }

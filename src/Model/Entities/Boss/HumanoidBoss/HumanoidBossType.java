@@ -14,6 +14,7 @@ public enum HumanoidBossType {
             200,
             100,
             16,
+            15,
             10,
             7,
             800,
@@ -30,6 +31,7 @@ public enum HumanoidBossType {
     private final int maxHP;
     private final int maxMP;
     private final int armourClass;
+    private final int spellSave;
     private final int accuracy;
     private final int level;
     private final int souls;
@@ -39,7 +41,7 @@ public enum HumanoidBossType {
     private final ArmourType armourType;
     private final List<Castable> startingAbilities;
 
-    HumanoidBossType(String name, int[] stats, int maxHP, int maxMP, int armourClass, int accuracy,
+    HumanoidBossType(String name, int[] stats, int maxHP, int maxMP, int armourClass, int spellSave, int accuracy,
                      int level, int souls, int initiativeBonus, String description, WeaponType weaponType,
                      ArmourType armourType, List<Castable> startingAbilities) {
         this.name = name;
@@ -47,6 +49,7 @@ public enum HumanoidBossType {
         this.maxHP = maxHP;
         this.maxMP = maxMP;
         this.armourClass = armourClass;
+        this.spellSave = spellSave;
         this.accuracy = accuracy;
         this.level = level;
         this.souls = souls;
@@ -107,5 +110,9 @@ public enum HumanoidBossType {
 
     public int[] getStats() {
         return stats;
+    }
+
+    public int getSpellSave() {
+        return spellSave;
     }
 }

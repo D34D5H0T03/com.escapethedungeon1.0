@@ -2,7 +2,8 @@ package Model.Ability.Spell.RestorativeSpell;
 
 import Model.Ability.Spell.Spell;
 import Model.Entities.Combatant;
-import Model.Entities.Player.Player;
+
+import java.util.Random;
 
 public class RestorativeSpell extends Spell {
     private final int hpRestore;
@@ -15,24 +16,39 @@ public class RestorativeSpell extends Spell {
     }
 
     @Override
-    public void cast(Combatant caster, Combatant target){
-        if(caster.getMp() < mpCost){
-            System.out.println("NOT ENOUGH MP");
-            return;
-        }
-        caster.setMp(caster.getMp() - mpCost);
+    public void cast(Combatant caster, Combatant target, boolean isCritical){
+        isCritical = false;
+        Random rand = new Random();
+        int roll = rand.nextInt(20) + 1;
 
-        if (hpRestore > 0) {
-            int newHp = target.getHp() + hpRestore;
+        if(roll == 20){
+            isCritical = true;
+        }
+
+        int actualHpRestore = hpRestore;
+        int actualMpRestore = mpRestore;
+
+        if(isCritical){
+            System.out.println("PERFECT CAST");
+            actualHpRestore *= 2;
+            actualMpRestore *= 2;
+        }
+
+        if (actualHpRestore > 0) {
+            int newHp = target.getHp() + actualHpRestore;
             target.setHp(Math.min(newHp, target.getMaxHP()));
-            System.out.println(target.getName() + " recovered " + hpRestore + " HP!");
+            System.out.println(target.getName() + " recovered " + actualHpRestore + " HP!");
         }
 
-        if (mpRestore > 0) {
-            int newMp = target.getMp() + mpRestore;
+        if (actualMpRestore > 0) {
+            int newMp = target.getMp() + actualMpRestore;
             target.setMp(Math.min(newMp, target.getMaxMP()));
-            System.out.println(target.getName() + " recovered " + mpRestore + " MP!");
+            System.out.println(target.getName() + " recovered " + actualMpRestore + " MP!");
         }
+    }
+
+    public boolean isRequiresAttackRoll(){
+        return false;
     }
 
     public int getHpRestore() {

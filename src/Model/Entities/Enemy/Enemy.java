@@ -1,6 +1,7 @@
 package Model.Entities.Enemy;
 
 import Model.Entities.Combatant;
+import Util.Dice;
 
 public class Enemy implements Combatant {
     private EnemyType type;
@@ -10,11 +11,13 @@ public class Enemy implements Combatant {
     private int mp;
     private int maxMP;
     private int armourClass;
+    private int spellSave;
     private int accuracy;
     private int level;
-    private int damageMin;
-    private int damageMax;
     private int souls;
+    private Dice.DiceType primaryDice;
+    private Dice.DiceType secondaryDice;
+    private int damageBonus;
 
     public Enemy(EnemyType type, int level) {
         if (level < 1) throw new IllegalArgumentException("Level must be >= 1");
@@ -29,15 +32,55 @@ public class Enemy implements Combatant {
         this.mp = type.getMp();
 
         this.armourClass = type.getArmourClass();
+        this.spellSave = type.getSpellSave();
         this.accuracy = type.getAccuracy();
-        this.damageMin = type.getDamageMin();
 
-        this.damageMax = (level >= type.getUpgradeLevel() && type.getUpgradeLevel() > 0)
-                ? type.getUpgradedDamageMax()
-                : type.getBaseDamageMax();
 
+        if (level >= type.getUpgradeLevel() && type.getUpgradeLevel() > 0) {
+            this.primaryDice = type.getUpgradedPrimaryDice();
+            this.secondaryDice = type.getUpgradedSecondaryDice();
+            this.damageBonus = type.getUpgradedDamageBonus();
+        } else {
+            this.primaryDice = type.getBasePrimaryDice();
+            this.secondaryDice = type.getBaseSecondaryDice();
+            this.damageBonus = type.getBaseDamageBonus();
+        }
 
         this.souls = type.getBaseSouls() + type.getSoulsPerLevel() * (level - 1);
+    }
+
+    @Override
+    public int calculateBaseDamage(){
+        int damage = Dice.rollDice(primaryDice);
+
+        if (secondaryDice != null) {
+            damage += Dice.rollDice(secondaryDice);
+        }
+        return damage;
+    }
+
+    @Override
+    public int calculateTotalDamage() {
+        int damage = Dice.rollDice(primaryDice);
+
+        if (secondaryDice != null) {
+            damage += Dice.rollDice(secondaryDice);
+        }
+
+        damage += damageBonus;
+        damage += (level / 2);
+
+        return Math.max(1, damage); //for at least 1 damage
+    }
+
+    @Override
+    public boolean canRegenerate(){
+        return false;
+    }
+
+    @Override
+    public int regenerationRate(){
+        return 0;
     }
 
     public EnemyType getType() {
@@ -84,26 +127,26 @@ public class Enemy implements Combatant {
     }
 
     @Override
-    public int getInitiativeBonus(){ //for the combatant interface, fodder enemies dont have initiative bonus
-        return 0;
+    public int getInitiativeBonus() {
+        return level / 2;
     }
 
+    @Override
+    public int getSpellSave() {
+        return spellSave + getLevel();
+    }
+
+    @Override
     public int getAccuracy() {
         return accuracy;
     }
 
+    @Override
     public int getLevel() {
         return level;
     }
 
-    public int getDamageMin() {
-        return damageMin;
-    }
-
-    public int getDamageMax() {
-        return damageMax;
-    }
-
+    @Override
     public int getSouls() {
         return souls;
     }
@@ -125,32 +168,41 @@ public class Enemy implements Combatant {
         this.maxHP = maxHP;
     }
 
-    public void setDamageMin(int damageMin) {
-        this.damageMin = damageMin;
-    }
-
-    public void setDamageMax(int damageMax) {
-        this.damageMax = damageMax;
-    }
-
     public void setSouls(int souls) {
         this.souls = souls;
     }
 
     @Override
-    public boolean isAlive(){
+    public void addSouls(int amount) {
+        this.souls += amount;
+    }
+
+    @Override
+    public boolean isAlive() {
         return (hp > 0);
     }
 
     @Override
-    public void applyDamage(int amount){
+    public void applyDamage(int amount) {
         this.hp -= amount;
     }
 
     @Override
-    public void applyHealing(int amount){
+    public void applyHealing(int amount) {
         this.hp += amount;
     }
 
+    //getters for damage
+    public Dice.DiceType getPrimaryDice() {
+        return primaryDice;
+    }
+
+    public Dice.DiceType getSecondaryDice() {
+        return secondaryDice;
+    }
+
+    public int getDamageBonus() {
+        return damageBonus;
+    }
 
 }
